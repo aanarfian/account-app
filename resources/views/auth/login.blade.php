@@ -25,6 +25,12 @@
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
             </div>
 
+            @if (session()->get('login.attempts', 0) > 2)
+                <div class="mt-4">
+                    {!! NoCaptcha::display(['data-theme' => 'dark']) !!}
+                </div>
+            @endif
+
             <div class="block mt-4">
                 <label for="remember_me" class="flex items-center">
                     <x-checkbox id="remember_me" name="remember" />
@@ -44,5 +50,6 @@
                 </x-button>
             </div>
         </form>
+        {{-- {{ session()->get('login.attempts', 0) }} --}}
     </x-authentication-card>
 </x-guest-layout>
