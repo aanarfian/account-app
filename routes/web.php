@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UnsecuredAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,3 +27,21 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+// unsecured authentication
+Route::prefix('unsecured')->name('unsecured.')->group(function () {
+    // login
+    Route::get('/login', function () {
+        return view('unsecured.login');
+    })->name("loginView");
+
+    Route::post('/login', [UnsecuredAuthController::class, 'login'])->name("login");
+
+    // register
+    Route::get('/registerView', function () {
+        return view('unsecured.register');
+    })->name("registerView");
+    Route::post('/register', [UnsecuredAuthController::class, 'register'])->name("register");
+});
+
+
