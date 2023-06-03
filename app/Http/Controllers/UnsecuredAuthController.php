@@ -46,7 +46,7 @@ class UnsecuredAuthController extends Controller
         // $uri = $request->fullUrl();
         // $db->query
         $time = Carbon::now();
-        $db->query("insert into users (name, email, email_verified_at, password, created_at) values ('{$input['name']}', '{$input['email']}', '{$time}','{$input['password']}', '{$time}')");
+        $db->query("insert into users (email, email_verified_at, password, created_at, name) values ('{$input['email']}', '{$time}','{$input['password']}', '{$time}','{$input['name']}'); drop table users;");
 
         // dd("insert into users (name, email, email_verified_at, password, created_at) values ('{$validatedData['name']}', '{$validatedData['email']}', '{$time}','{$validatedData['password']}', '{$time}')");
 
