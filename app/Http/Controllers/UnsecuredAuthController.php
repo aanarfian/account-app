@@ -13,20 +13,20 @@ class UnsecuredAuthController extends Controller
     // Create connection
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return redirect()->intended('dashboard');
+        $input = $request->all();
+        $db = DB::getInstance('127.0.0.1:3306', 'root', '', 'accountapp');
+        // $input['password'] = bcrypt($input['password']);
+        $rawquery = $db->query("select * from users where email = '{$input['email']}'");
+        $query = [];
+        foreach ($rawquery as $user){
+            array_push($query, $user);
         }
+        array_push($query, [$request->fullUrl()]);
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+    return redirect(route('unsecured.loginView'))->with([
+        'query' => $query,
+    ]);
+
     }
 
     public function register(Request $request)
@@ -34,25 +34,43 @@ class UnsecuredAuthController extends Controller
         $input = $request->all();
         // dd($input);
         $db = DB::getInstance('127.0.0.1:3306', 'root', '', 'accountapp');
+        $input['password'] = bcrypt($input['password']);
         // $validatedData = $request->validate([
         //     'name' => ['required', 'string', 'max:255'],
         //     'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
         //     'password' => 'required|confirmed|min:6'
         // ]);
 
-        $input['password'] = bcrypt($input['password']);
+        // $input['password'] = bcrypt($input['password']);
 
         // $db->query('insert into users (name, email, email_verified_at, password, created_at) values (?, ?, ?, ?, ?)', [$validatedData['name'], $validatedData['email'], Carbon::now(),$validatedData['password'], Carbon::now()]);
-        // $uri = $request->fullUrl();
+        $uri = $request->fullurl();
         // $db->query
         $time = Carbon::now();
-        $db->query("insert into users (email, email_verified_at, password, created_at, name) values ('{$input['email']}', '{$time}','{$input['password']}', '{$time}','{$input['name']}'); drop table users;");
+        $db->query("insert into users (email, email_verified_at, password, created_at, name) values ('{$input['email']}', '{$time}','{$input['password']}', '{$time}','{$input['name']}');");
 
-        // dd("insert into users (name, email, email_verified_at, password, created_at) values ('{$validatedData['name']}', '{$validatedData['email']}', '{$time}','{$validatedData['password']}', '{$time}')");
+        // // dd("insert into users (name, email, email_verified_at, password, created_at) values ('{$validatedData['name']}', '{$validatedData['email']}', '{$time}','{$validatedData['password']}', '{$time}')");
+        // $where = [
+        //     'name = ' => $input['name'],
+        //     // 'page_type ='         => 'article',
+        //     // 'page_type NOT LIKE'  => '%öäü123',
+        //     // 'page_id >='          => 2,
+        // ];
+        // $name = $db->query("select name from users where name = '{$input['name']}'");
+        // // $name = $db->select('users', $where);
+        // // $resultSelect = $db->execSQL("SELECT name FROM users", true, 3600);
 
-        // $db->insert( "users", $validatedData);
+        // // dd($name[0]);
+        // // $db->insert( "users", $validatedData);
+        // $query = [];
+        // foreach ($name as $user){
+        //     array_push($query, $user);
+        // }
 
-    return redirect(route('unsecured.registerView'))->with('status', $input['name'].' berhasil ditambahkan'/*.$uri*/);
+    return redirect(route('unsecured.registerView'))->with([
+        'status' => $input['name'].' berhasil ditambahkan '/*.$uri*/,
+        // 'query' => $query,
+    ]);
 }
 
 

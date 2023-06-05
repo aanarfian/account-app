@@ -4,15 +4,23 @@
             <x-authentication-card-logo />
         </x-slot>
 
+        {{-- @if (session()->has('query'))
+            <div class="alert alert-success">
+                @foreach (session('query') as $user)
+                    @foreach ($user as $param)
+                        <p>{{ $param }} berhasil ditambahkan</p>
+                    @endforeach
+                @endforeach
+            </div>
+        @endif --}}
         @if (session()->has('status'))
             <div class="alert alert-success">
                 {{ session('status') }}
             </div>
         @endif
-
         <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('unsecured.register') }}">
+        <form method="GET" action="{{ route('unsecured.register') }}">
 
             <div>
                 <x-label for="name" value="{{ __('Name') }}" />

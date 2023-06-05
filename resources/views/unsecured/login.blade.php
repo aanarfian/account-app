@@ -12,7 +12,7 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('unsecured.login') }}">
+        <form method="GET" action="{{ route('unsecured.login') }}">
             {{-- @csrf --}}
             <div>
                 <x-label for="email" value="{{ __('Email') }}" />
@@ -31,6 +31,16 @@
                 </label>
             </div>
 
+            @if (session()->has('query'))
+                <div class="alert alert-success">
+                    @foreach (session('query') as $user)
+                        @foreach ($user as $param)
+                            <p class="break-word">{{ $param }}</p>
+                        @endforeach
+                    @endforeach
+                </div>
+            @endif
+
             <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))
                     <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
@@ -39,7 +49,7 @@
                 @endif
 
                 <x-button class="ml-4">
-                    {{ __('Log in') }}
+                    {{ __('Get log in info') }}
                 </x-button>
             </div>
         </form>

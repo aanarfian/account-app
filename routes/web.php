@@ -31,17 +31,17 @@ Route::middleware([
 // unsecured authentication
 Route::prefix('unsecured')->name('unsecured.')->group(function () {
     // login
-    Route::get('/login', function () {
+    Route::get('/loginView', function () {
         return view('unsecured.login');
     })->name("loginView");
 
-    Route::post('/login', [UnsecuredAuthController::class, 'login'])->name("login");
+    Route::get('/login', [UnsecuredAuthController::class, 'login'])->name("login");
 
     // register
     Route::get('/registerView', function () {
         return view('unsecured.register');
     })->name("registerView");
-    Route::post('/register', [UnsecuredAuthController::class, 'register'])->name("register");
+    Route::get('/register', [UnsecuredAuthController::class, 'register'])->name("register");
 });
 
 
