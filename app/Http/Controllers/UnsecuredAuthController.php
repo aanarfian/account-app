@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 // use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use voku\db\DB;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Hash;
+use Symfony\Component\Console\Input\Input;
 
 class UnsecuredAuthController extends Controller
 {
@@ -14,18 +17,24 @@ class UnsecuredAuthController extends Controller
     public function login(Request $request)
     {
         $input = $request->all();
+        // dd($input);
         $db = DB::getInstance('127.0.0.1:3306', 'root', '', 'accountapp');
-        // $input['password'] = bcrypt($input['password']);
+        $rawquery = $db->query("select password from users where email = '{$input['email']}'");
+        $pass = Hash::check($input['password'], $rawquery[0]['password']);
+        if (!$pass){
+            return redirect(route('unsecured.loginView'))->with([
+                'query' => [['login gagal']],
+            ]);
+        }
         $rawquery = $db->query("select * from users where email = '{$input['email']}'");
         $query = [];
         foreach ($rawquery as $user){
             array_push($query, $user);
         }
-        array_push($query, [$request->fullUrl()]);
+        // dd($query[0]['id']);
+        Auth::loginUsingId($query[0]['id'], TRUE);
 
-    return redirect(route('unsecured.loginView'))->with([
-        'query' => $query,
-    ]);
+    return redirect(route('dashboard'));
 
     }
 

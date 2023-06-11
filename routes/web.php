@@ -35,7 +35,7 @@ Route::prefix('unsecured')->name('unsecured.')->group(function () {
         return view('unsecured.login');
     })->name("loginView");
 
-    Route::get('/login', [UnsecuredAuthController::class, 'login'])->name("login");
+    Route::post('/login', [UnsecuredAuthController::class, 'login'])->name("login");
 
     // register
     Route::get('/registerView', function () {
